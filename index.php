@@ -1,12 +1,25 @@
 <?php
-        $name = isset($_POST['name']) ? $_POST['name'] : '';
-        $email = isset($_POST["email"]) ? $_POST["email"] : '';
-        $subject = isset($_POST["subject"]) ?$_POST['subject'] : '';
-        $message = isset($_POST['message']) ?$_POST['message'] : '';
+$name = isset($_POST['name']) ? $_POST['name'] : '';
+$email = isset($_POST["email"]) ? $_POST["email"] : '';
+$subject = isset($_POST["subject"]) ?$_POST['subject'] : '';
+$message = isset($_POST['message']) ?$_POST['message'] : '';
 
-        // echo $name . ' ' . $email . ' ' . $subject . ' ' . $message;
+//Validate inputs
+function test_inputs($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
 
-        mail($email, $subject, $message);
+if($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = test_inputs($name);
+    $email = test_inputs(filter_var($email, FILTER_VALIDATE_EMAIL));// This is to check whether or not this email is valid
+    $subject = test_inputs($subject);
+    $message = test_inputs($message);
+    echo $email ? mail($email, $subject, $message) : "Please enter a valid email address";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +33,7 @@
 </head>
 <body>
     <h1>Contact us form</h1>
-    <form action="index.php" method="post">
+    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
         <div>
             <label for="name">Name</label>
             <input type="text" name="name">
