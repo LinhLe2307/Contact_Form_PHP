@@ -25,7 +25,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alertMessage = 'Please fill in all fields!';
             $msgClass = 'alert';
         } else {
-
             $body = '<h4>Name:</h4> <p>'.$name.'</p>
                     <h4>Email:</h4> <p>'.$email.'</p>
                     <h4>Subject:</h4> <p>'.$subject.'</p>
@@ -63,7 +62,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <h1>Contact us form</h1>
-    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+    <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
         <?php if($alertMessage != '' ) { ?> 
             <div class= "msg <?= $msgClass?>"><?= $alertMessage; ?></div> 
         <?php }; ?>
