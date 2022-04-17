@@ -3,7 +3,8 @@ $name = isset($_POST['name']) ? $_POST['name'] : '';
 $email = isset($_POST["email"]) ? $_POST["email"] : '';
 $subject = isset($_POST["subject"]) ?$_POST['subject'] : '';
 $message = isset($_POST['message']) ?$_POST['message'] : '';
-
+$alertMessage = '';
+$displayInfo = '';
 //Validate inputs
 function test_inputs($data) {
     $data = trim($data);
@@ -13,11 +14,20 @@ function test_inputs($data) {
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = test_inputs($name);
-    $email = test_inputs(filter_var($email, FILTER_VALIDATE_EMAIL));// This is to check whether or not this email is valid
-    $subject = test_inputs($subject);
-    $message = test_inputs($message);
-    echo $email ? mail($email, $subject, $message) : "Please enter a valid email address";
+    if (!empty($name) && !empty($email) && !empty($subject) && !empty($message)) {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            $alertMessage = 'Please fill in all fields!';
+        } else {
+            $name = test_inputs($name);
+            $email = test_inputs($email);// This is to check whether or not this email is valid
+            $subject = test_inputs($subject);
+            $message = test_inputs($message);
+            $displayInfo = "$name - $email - $subject - $message";
+            mail($email, $subject, $message);
+        }
+    } else {
+        $alertMessage = 'Please fill in all fields!';
+    }
 }
 
 ?>
@@ -52,6 +62,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <input type="submit" value="Submit"/>
     </form>
-    <div class="output"><?= $name . ' ' . $email . ' ' . $subject . ' ' . $message;?></div>
+    <div><?= $alertMessage; ?></div>
+    <div class="output"><?= $displayInfo?></div>
 </body>
 </html>
